@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Generatore di posti {% endblock %}
+
+{% block links %} 
+<link rel="stylesheet" href="{% static 'posti/styles.css' %}"> 
+<link rel="stylesheet" href="{% static 'navbar.css' %}">
+{% endblock %}
+
+{% block content %}
+
+{% include 'navbar.html' %}
+
+{% load widget_tweaks %}
+    {% load custom_filters %}
+  <!--  FORM  -->
+    
+    <form method="POST" class="form">
+        {% csrf_token %}
+        <div class="containerPosti">
+            <div class="cattedra">
+                <p>CATTEDRA</p>
+            </div>
+            <div class="fila">
+                {%for field in form %}
+                {% if forloop.counter0 < 7 %}
+                <div class="formIn 
+                                {% if results|index:forloop.counter0 == 'error' %} errorFormIn
+                                {% endif %}
+                                {% if forloop.counter0|modulo:7 == 2 %} prima-riga 
+                                {% elif forloop.counter0|modulo:7 == 4 %} seconda-riga 
+                                {% endif %}
+                                ">
+                    <div>
+                        <p class="form-label">{{ field.label }}</p></div>
+                    {{ field|add_class:"formBox"}}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class="fila">
+                {%for field in form %}
+                {% if forloop.counter0 >= 7  and forloop.counter0 < 14%}
+                <div class="formIn 
+                                {% if results|index:forloop.counter0 == 'error' %} errorFormIn
+                                {% endif %}
+                                {% if forloop.counter0|modulo:7 == 2 %} prima-riga 
+                                {% elif forloop.counter0|modulo:7 == 4 %} seconda-riga 
+                                {% endif %}">
+                    <div><p class="form-label">{{ field.label }}</p></div>
+                    {{ field|add_class:"formBox" }}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class="fila">
+                {%for field in form %}
+                {% if forloop.counter0 >= 14 %}
+                <div class="formIn
+                                {% if results|index:forloop.counter0 == 'error' %} errorFormIn
+                                {% endif %}
+                                {% if forloop.counter0|modulo:7 == 2 %} prima-riga 
+                                {% elif forloop.counter0|modulo:7 == 4 %} seconda-riga 
+                                {% endif %}">
+                    <div><p class="form-label">{{ field.label }}</p></div>
+                    {{ field|add_class:"formBox" }}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+
+           
+
+        </div>
+        <div class="btnCont">
+             <button type="submit" class="subBtn">Generare posti</button>
+        </div>
+    </form>
+
+  <!--    SE   non   C'è IL SUBMIT-->
+
+    {% if not results or error == 1 %}
+    {% include 'posti\NotResult.html' %}
+        <!--    SE C'è IL SUBMIT-->
+    {% else %}
+    {% include 'posti\result.html' %}
+    {% endif %}
+
+
+{% endblock %}
